@@ -87,9 +87,10 @@ export default class {
   }
 
   handleEditTicket(e, bill, bills) {
+    const activeBill = $('.bill-card.active')[0];
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
-    if (this.counter % 2 === 0) {
+    if (activeBill) {
       bills.forEach(b => {
         $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
       })
@@ -137,11 +138,7 @@ export default class {
     if (this.counter % 2 === 0) {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
-        .html(cards(filteredBills(bills, getStatus(this.index))));
-      $(`#open-bill`).off('click');
-      bills.forEach(bill => {
-        $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills));
-      });
+        .html(cards(filteredBills(bills, getStatus(this.index))))
       this.counter ++
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
@@ -150,9 +147,14 @@ export default class {
       this.counter ++
     }
 
-    bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
-    })
+    bills.forEach((bill) => {
+      const billId = bill.id;
+      $(`#open-bill${billId}`).click((e) => {
+        $('.bill-card').removeClass('active');
+        $(`#open-bill${billId}`).addClass('active');
+        this.handleEditTicket(e, bill, bills);
+      });
+    });
 
     return bills
 
