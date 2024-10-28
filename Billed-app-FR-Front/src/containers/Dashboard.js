@@ -87,10 +87,9 @@ export default class {
   }
 
   handleEditTicket(e, bill, bills) {
-    const activeBill = $('.bill-card.active')[0];
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
-    if (activeBill) {
+    if (this.counter % 2 === 0) {
       bills.forEach(b => {
         $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
       })
@@ -149,11 +148,12 @@ export default class {
 
     bills.forEach((bill) => {
       const billId = bill.id;
-      $(`#open-bill${billId}`).click((e) => {
-        $('.bill-card').removeClass('active');
+      if(! $(`#open-bill${billId}`).hasClass("active")) {
         $(`#open-bill${billId}`).addClass('active');
-        this.handleEditTicket(e, bill, bills);
-      });
+        $(`#open-bill${billId}`).click((e) => {
+          this.handleEditTicket(e, bill, bills);
+        });
+      }
     });
 
     return bills
